@@ -1,0 +1,77 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          lxc-webpanel
+# Required-Start:    $local_fs $remote_fs $network $time
+# Required-Stop:     $local_fs $remote_fs $network
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: LXC WebPanel intit script
+# Description:       LXC WebPanel intit script
+### END INIT INFO
+
+# Pijada de colores del master
+RED='\033[1m\033[31m'
+GREEN='\033[1m\033[32m'
+ORANGE='\033[1m\033[35m'
+NORMAL='\033[22m\033[0m'
+
+WORK_DIR="/home/mpanzuela/Emergya-systems/LXC-Web-Panel"
+SCRIPT="lwp.py"
+PYTHON_EXEC=`which python`
+DAEMON="$PYTHON_EXEC $SCRIPT"
+PID=`ps aux | grep -i lwp.py | grep -v grep | awk {'print $2'}`
+
+
+function start () {
+      if [ -z "$PID" ]; then
+         cd $WORK_DIR
+         $DAEMON > /dev/null 2>&1 &
+         sleep 1
+         [ $? -eq 0 ] && echo -e "${GREEN}[INFO] Starting LXC WebPanel service...${NORMAL}"
+         logger "[INFO] Starting LXC WebPanel service..."
+      else
+         echo -e "${RED}[ERROR] LXC WebPanel is already started...${NORMAL}"
+      fi
+}
+
+function stop () {
+      if [ -n "$PID" ]; then
+         echo -e "${GREEN}Stopping LXC WebPanel with PID $PID ${NORMAL}"
+         kill $PID && [ $? -eq 1 ] && echo -e "${RED}Something is wrong...${NORMAL}"
+         sleep 1
+         logger "[INFO] Stopping LXC WebPanel service..."
+     else
+         echo -e "${RED}[ERROR] LXC WebPanel is already stopped...${NORMAL}"
+     fi
+}
+
+function restart () {
+      stop
+      sleep 5
+      # Check status
+      PID=`ps aux | grep -i lwp.py | grep -v grep | awk {'print $2'}`
+      [ ! -z "$PID" ] && echo -e "${RED}[ERROR] LXC WebPanel is running with PID $PID ${NORMAL}" && exit 1 || echo -e "${RED}[INFO] LXC WebPanel is STOPED...${NORMAL}"
+      start
+}
+
+case "$1" in
+   start) 
+      start
+   ;;
+   stop)
+      stop
+   ;;
+   restart)
+      restart
+   ;;
+   status)
+      [ -n "$PID" ] && echo -e "${GREEN}[INFO] LXC WebPanel is working hard - PID: $PID ${NORMAL}" || echo -e "${RED}[INFO] LXC WebPanel is STOPPED ${NORMAL}"
+   ;;
+   *)
+      echo -e "${RED}Usage: /etc/init.d/lwp {start|stop|restart|status}${NORMAL}"
+      exit 2
+   ;;
+esac
+exit 0
