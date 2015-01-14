@@ -11,7 +11,7 @@
 # Description:       LXC WebPanel intit script
 ### END INIT INFO
 
-# Pijada de colores del master
+# Pijadas de colores del master
 RED='\033[1m\033[31m'
 GREEN='\033[1m\033[32m'
 ORANGE='\033[1m\033[35m'
