@@ -17,7 +17,7 @@ GREEN='\033[1m\033[32m'
 ORANGE='\033[1m\033[35m'
 NORMAL='\033[22m\033[0m'
 
-WORK_DIR="/home/mpanzuela/Emergya-systems/LXC-Web-Panel"
+WORK_DIR="/home/moro/proyectos/LXC-Web-Panel"
 SCRIPT="lwp.py"
 PYTHON_EXEC=`which python`
 DAEMON="$PYTHON_EXEC $SCRIPT"
